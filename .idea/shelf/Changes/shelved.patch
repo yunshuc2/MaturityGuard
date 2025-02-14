@@ -1,0 +1,106 @@
+Index: src/config.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import pytz\r\n# 使用原始字符串处理Windows路径\r\nEXCEL_PATH = r\"C:\\Users\\melod\\OneDrive\\Desktop\\investment.xlsx\"\r\nTIMEZONE = pytz.timezone(\"America/Chicago\")\r\nREMINDER_DAYS = 10
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/config.py b/src/config.py
+--- a/src/config.py	(revision ae862510c3fbea975a2aac1e7f67ce79e0e36563)
++++ b/src/config.py	(date 1739567005549)
+@@ -2,4 +2,4 @@
+ # 使用原始字符串处理Windows路径
+ EXCEL_PATH = r"C:\Users\melod\OneDrive\Desktop\investment.xlsx"
+ TIMEZONE = pytz.timezone("America/Chicago")
+-REMINDER_DAYS = 10
+\ No newline at end of file
++REMINDER_DAYS = 10
+Index: src/excel_parser.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import pandas as pd\r\nfrom datetime import datetime\r\nimport config\r\n\r\ndef parse_excel():\r\n    data = []\r\n\r\n    # --------------------------\r\n    # 解析 CD 表\r\n    # --------------------------\r\n    try:\r\n        cd_df = pd.read_excel(\r\n            config.EXCEL_PATH,\r\n            sheet_name=\"CD\",\r\n            usecols=\"A:D\",\r\n            header=0,\r\n            converters={\r\n                \"Maturity Date\": lambda x: datetime.strptime(x, \"%m/%d/%Y\")  # 首字母大写，格式 MM/DD/YYYY\r\n            }\r\n        )\r\n\r\n        # 清理无效行（确保列名正确）\r\n        cd_df = cd_df[cd_df[\"Bank Name\"].notna()]\r\n\r\n        for _, row in cd_df.iterrows():\r\n            data.append({\r\n                \"name\": f\"{row['Bank Name']} CD\",\r\n                \"amount\": float(row[\"Amount($)\"]),\r\n                \"maturity\": row[\"Maturity Date\"],  # 列名首字母大写\r\n                \"rate\": float(row[\"Interest rate\"])\r\n            })\r\n    except Exception as e:\r\n        print(f\"解析CD表时出错: {str(e)}\")\r\n        raise  # 调试时抛出详细错误\r\n\r\n    # --------------------------\r\n    # 解析 Bonds 表\r\n    # --------------------------\r\n    try:\r\n        bonds_df = pd.read_excel(\r\n            config.EXCEL_PATH,\r\n            sheet_name=\"Bonds\",\r\n            usecols=\"B:F\",\r\n            header=0,\r\n            names=[\"Maturity Date\", \"Issue Date\", \"Type\", \"Interest Rate\", \"Amount\"],\r\n            converters={\r\n                \"Maturity Date\": lambda x: datetime.strptime(x, \"%m-%d-%Y\"),  # 格式 MM-DD-YYYY\r\n                \"Issue Date\": lambda x: datetime.strptime(x, \"%m/%d/%Y\")       # 格式 MM/DD/YYYY\r\n            }\r\n        )\r\n\r\n        for _, row in bonds_df.iterrows():\r\n            amount = float(str(row[\"Amount\"]).replace(\"$\", \"\").replace(\",\", \"\"))\r\n            data.append({\r\n                \"name\": f\"{row['Type']} Bond\",\r\n                \"amount\": amount,\r\n                \"maturity\": row[\"Maturity Date\"],\r\n                \"rate\": float(row[\"Interest Rate\"])\r\n            })\r\n    except Exception as e:\r\n        print(f\"解析Bonds表时出错: {str(e)}\")\r\n        raise\r\n\r\n    return data
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/excel_parser.py b/src/excel_parser.py
+--- a/src/excel_parser.py	(revision ae862510c3fbea975a2aac1e7f67ce79e0e36563)
++++ b/src/excel_parser.py	(date 1739567005534)
+@@ -51,6 +51,7 @@
+ 
+         for _, row in bonds_df.iterrows():
+             amount = float(str(row["Amount"]).replace("$", "").replace(",", ""))
++
+             data.append({
+                 "name": f"{row['Type']} Bond",
+                 "amount": amount,
+Index: src/calendar_manager.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from ics import Calendar, Event\r\nfrom datetime import timedelta\r\nimport config\r\n\r\n\r\ndef create_calendar_events(data):\r\n    c = Calendar()\r\n\r\n    for item in data:\r\n        event = Event()\r\n        event.name = f\"到期提醒: {item['name']}\"\r\n        event.begin = item['maturity'].replace(hour=9, minute=0)\r\n        event.description = (\r\n            f\"金额: ${item['amount']:,.2f}\\n\"\r\n            f\"利率: {item['rate'] * 100:.2f}%\"\r\n        )\r\n        event.alarms = [{\r\n            'trigger': -timedelta(days=config.REMINDER_DAYS),\r\n            'action': 'display',\r\n            'description': f\"提前{config.REMINDER_DAYS}天提醒\"\r\n        }]\r\n        c.events.add(event)\r\n\r\n    with open('reminders.ics', 'w', encoding='utf-8') as f:\r\n        f.write(c.serialize())
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/calendar_manager.py b/src/calendar_manager.py
+--- a/src/calendar_manager.py	(revision ae862510c3fbea975a2aac1e7f67ce79e0e36563)
++++ b/src/calendar_manager.py	(date 1739567005587)
+@@ -21,5 +21,7 @@
+         }]
+         c.events.add(event)
+ 
++
++
+     with open('reminders.ics', 'w', encoding='utf-8') as f:
+         f.write(c.serialize())
+\ No newline at end of file
+Index: src/timeline_plot.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import matplotlib.pyplot as plt\r\nimport matplotlib.dates as mdates\r\nimport matplotlib.ticker as ticker\r\nfrom datetime import datetime\r\nimport pandas as pd\r\nfrom matplotlib import rcParams\r\nimport os\r\n\r\n# 设置中文字体\r\nrcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'WenQuanYi Zen Hei']\r\nrcParams['axes.unicode_minus'] = False\r\n\r\n\r\ndef plot_timeline(data):\r\n    if not data:\r\n        print(\"No data provided.\")\r\n        return\r\n\r\n    # 删除旧图表文件\r\n    if os.path.exists(\"timeline.png\"):\r\n        os.remove(\"timeline.png\")\r\n\r\n    # 统一处理日期类型\r\n    for item in data:\r\n        maturity = item['maturity']\r\n\r\n        # 处理字符串类型的日期\r\n        if isinstance(maturity, str):\r\n            try:\r\n                maturity = datetime.strptime(maturity, \"%Y-%m-%d\")\r\n            except ValueError:\r\n                try:\r\n                    maturity = datetime.strptime(maturity, \"%m/%d/%Y\")\r\n                except ValueError as e:\r\n                    print(f\"无法解析日期: {maturity}, 错误: {str(e)}\")\r\n                    continue\r\n\r\n        # 处理 pandas.Timestamp 类型\r\n        if isinstance(maturity, pd.Timestamp):\r\n            maturity = maturity.to_pydatetime()\r\n\r\n        item['maturity'] = maturity\r\n\r\n    # 验证数据\r\n    for item in data:\r\n        print(f\"Name: {item['name']}, Maturity: {item['maturity']}, Amount: {item['amount']}\")\r\n\r\n    # 获取日期范围\r\n    min_date = min(item['maturity'] for item in data)\r\n    max_date = max(item['maturity'] for item in data)\r\n    max_amount = max(item['amount'] for item in data)\r\n\r\n    plt.figure(figsize=(15, 8))\r\n    ax = plt.gca()\r\n\r\n    # 横轴设置\r\n    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))\r\n    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))\r\n    plt.xticks(rotation=45)\r\n    ax.set_xlim(min_date, max_date)\r\n\r\n    # 纵轴设置\r\n    ax.yaxis.set_major_formatter(ticker.StrMethodFormatter('${x:,.0f}'))\r\n    plt.ylim(0, max_amount * 1.2)\r\n\r\n    # 绘制数据点\r\n    for idx, item in enumerate(data):\r\n        plt.plot(\r\n            item['maturity'], item['amount'],\r\n            marker='o', markersize=10,\r\n            label=f\"{item['name']} (${item['amount']:,.0f})\"\r\n        )\r\n        # 动态调整标注位置\r\n        vertical_offset = 10 + (idx % 3) * 20\r\n        plt.annotate(\r\n            f\"{item['maturity'].strftime('%Y-%m-%d')}\\n${item['amount']:,.0f}\",\r\n            (item['maturity'], item['amount']),\r\n            textcoords=\"offset points\",\r\n            xytext=(0, vertical_offset),\r\n            ha='center',\r\n            fontsize=8\r\n        )\r\n\r\n    # 图表美化\r\n    plt.title(\"投资到期时间轴（横轴为到期日，纵轴为金额）\", fontsize=14)\r\n    plt.xlabel(\"到期日\")\r\n    plt.ylabel(\"金额\")\r\n    plt.grid(True, linestyle='--', alpha=0.7)\r\n    plt.tight_layout()\r\n\r\n    # 保存并显示\r\n    plt.savefig('timeline.png', dpi=300)\r\n    plt.show()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/timeline_plot.py b/src/timeline_plot.py
+--- a/src/timeline_plot.py	(revision ae862510c3fbea975a2aac1e7f67ce79e0e36563)
++++ b/src/timeline_plot.py	(date 1739567005569)
+@@ -90,4 +90,4 @@
+ 
+     # 保存并显示
+     plt.savefig('timeline.png', dpi=300)
+-    plt.show()
+\ No newline at end of file
++    plt.show()
+Index: src/main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import config\r\nfrom excel_parser import parse_excel\r\nfrom calendar_manager import create_calendar_events\r\nfrom timeline_plot import plot_timeline\r\n\r\ndef main():\r\n    data = parse_excel()\r\n    create_calendar_events(data)\r\n    plot_timeline(data)\r\n    print(\"处理完成！生成文件：\\n- reminders.ics\\n- timeline.png\")\r\n\r\nif __name__ == \"__main__\":\r\n    main()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main.py b/src/main.py
+--- a/src/main.py	(revision ae862510c3fbea975a2aac1e7f67ce79e0e36563)
++++ b/src/main.py	(date 1739567005600)
+@@ -5,6 +5,7 @@
+ 
+ def main():
+     data = parse_excel()
++
+     create_calendar_events(data)
+     plot_timeline(data)
+     print("处理完成！生成文件：\n- reminders.ics\n- timeline.png")
+Index: requirements
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>pandas\r\nopenpyxl\r\npython-dateutil\r\nics\r\nmatplotlib
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/requirements b/requirements
+--- a/requirements	(revision ae862510c3fbea975a2aac1e7f67ce79e0e36563)
++++ b/requirements	(date 1739567005559)
+@@ -2,4 +2,4 @@
+ openpyxl
+ python-dateutil
+ ics
+-matplotlib
+\ No newline at end of file
++matplotlib
