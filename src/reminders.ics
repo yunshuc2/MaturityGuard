@@ -1,0 +1,88 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:ics.py - http://git.io/lLljaA
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $7\,000.00\n利率: 4.30%
+DTSTART:20250520T090000Z
+SUMMARY:到期提醒: PNC BANK CD
+UID:00801431-1d63-46c6-8277-c8b6eb25ff30@0080.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $5\,000.00\n利率: 4.45%
+DTSTART:20251119T090000Z
+SUMMARY:到期提醒: US bank CD
+UID:017beb5e-04cf-4329-b79d-bf90a8f7bde0@017b.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $5\,000.00\n利率: 4.25%
+DTSTART:20250814T090000Z
+SUMMARY:到期提醒: BOA(加州分部） CD
+UID:56f209cd-3094-4368-83a2-7508af1c2d12@56f2.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $8\,000.00\n利率: 4.45%
+DTSTART:20251126T090000Z
+SUMMARY:到期提醒: JPMORGAN CHASE CD
+UID:4e07e42a-bcf0-4b6b-b142-9f42f026d617@4e07.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $5\,000.00\n利率: 4.35%
+DTSTART:20260106T090000Z
+SUMMARY:到期提醒: JPMORGAN CHASE CD
+UID:996aa52b-1590-4b17-a0b0-bfa03ccb2577@996a.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $40\,000.00\n利率: 3.70%
+DTSTART:20250927T090000Z
+SUMMARY:到期提醒: BOA CD
+UID:9e05e7ab-0a0e-4c3e-8f16-8e63c6c74a23@9e05.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $5\,000.00\n利率: 4.35%
+DTSTART:20260710T090000Z
+SUMMARY:到期提醒: JPMORGAN CHASE CD
+UID:566bef84-ec5c-490f-be3a-2b7e95e16442@566b.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $10\,000.00\n利率: 4.50%
+DTSTART:20270214T090000Z
+SUMMARY:到期提醒: JPMORGAN CHASE CD
+UID:cf191cc5-35e8-4f65-8fea-7a58b9866a89@cf19.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $5\,000.00\n利率: 4.21%
+DTSTART:20260122T090000Z
+SUMMARY:到期提醒: 1-Year Bill Bond
+UID:9433dec9-30c5-4952-b84e-84285ab76ed4@9433.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $10\,000.00\n利率: 4.12%
+DTSTART:20270131T090000Z
+SUMMARY:到期提醒: 2-Year Note Bond
+UID:669c91cd-7f4e-4517-8138-35c15dc01913@669c.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $100\,000.00\n利率: 4.05%
+DTSTART:20250627T090000Z
+SUMMARY:到期提醒: BOA CD
+UID:bf36c51b-0fb2-472f-b923-1d2a807c35e5@bf36.org
+END:VEVENT
+BEGIN:VEVENT
+{'trigger': datetime.timedelta(days=-10), 'action': 'display', 'description': '提前10天提醒'}
+DESCRIPTION:金额: $10\,000.00\n利率: 4.40%
+DTSTART:20260811T090000Z
+SUMMARY:到期提醒: JPMORGAN CHASE CD
+UID:6582801a-aadc-4f5e-a9a3-c30bec49a074@6582.org
+END:VEVENT
+END:VCALENDAR
