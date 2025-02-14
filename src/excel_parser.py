@@ -51,6 +51,7 @@ def parse_excel():
 
         for _, row in bonds_df.iterrows():
             amount = float(str(row["Amount"]).replace("$", "").replace(",", ""))
+
             data.append({
                 "name": f"{row['Type']} Bond",
                 "amount": amount,

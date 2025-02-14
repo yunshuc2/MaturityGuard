@@ -21,5 +21,6 @@ def create_calendar_events(data):
         }]
         c.events.add(event)
 
+
     with open('reminders.ics', 'w', encoding='utf-8') as f:
         f.write(c.serialize())

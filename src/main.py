@@ -3,6 +3,7 @@ from excel_parser import parse_excel
 from calendar_manager import create_calendar_events
 from timeline_plot import plot_timeline
 
+
 def main():
     data = parse_excel()
     create_calendar_events(data)
